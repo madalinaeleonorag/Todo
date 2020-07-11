@@ -77,10 +77,9 @@
   </v-container>
 </template>
 
-
 <script>
 export default {
-  name: "App",
+  name: "HelloWorld",
   data() {
     return {
       toDos: [],
