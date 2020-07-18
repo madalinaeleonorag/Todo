@@ -1,10 +1,5 @@
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
-      ToDo
-      <v-spacer></v-spacer>
-    </v-app-bar>
-
+  <v-app :style="bgImage" class="bg-image">
     <v-content>
       <HelloWorld />
     </v-content>
@@ -22,7 +17,19 @@ export default {
   },
 
   data: () => ({
+    bgImage: {
+      background:
+        "url(" + require("@/assets/bg.jpg") + ") no-repeat center center fixed"
+    }
+
     //
   })
 };
 </script>
+<style>
+.bg-image {
+  height: 100%;
+  overflow: hidden;
+  background-size: cover;
+}
+</style>
