@@ -31,5 +31,6 @@ export default {
   height: 100%;
   overflow: hidden;
   background-size: cover;
+  /* filter: blur(1px); */
 }
 </style>
