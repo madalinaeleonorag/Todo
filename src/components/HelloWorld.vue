@@ -23,7 +23,6 @@
           label="Select priority"
           class="select-priority"
         ></v-select>
-
         <v-menu
           ref="menu"
           v-model="menu"
@@ -63,22 +62,40 @@
         >Calendar</div>
       </div>
       <div class="tab-content" v-if="tab === 'list'">
-        <!-- SELECT PRIORITY -->
+        <!-- FILTERS -->
         <v-flex xs12 sm12 md12 row justify-center>
-          <v-flex xs12 sm12 md6 row justify-center>
-            <v-flex xs3 sm3 md3>
-              <v-checkbox label="All" v-model="all" @change="checkAll"></v-checkbox>
-            </v-flex>
-            <v-flex xs3 sm3 md3>
-              <v-checkbox label="High" v-model="high" @change="check"></v-checkbox>
-            </v-flex>
-            <v-flex xs3 sm3 md3>
-              <v-checkbox label="Medium" v-model="medium" @change="check"></v-checkbox>
-            </v-flex>
-            <v-flex xs3 sm3 md3>
-              <v-checkbox label="Low" v-model="low" @change="check"></v-checkbox>
-            </v-flex>
-          </v-flex>
+          <v-select
+            solo
+            :items="filterPriorities"
+            v-model="filterPriority"
+            item-value="filterPriority"
+            label="Select priority"
+            class="select-priority"
+          ></v-select>
+      <v-menu
+        ref="menu3"
+        v-model="menu3"
+        :close-on-content-click="false"
+        :return-value.sync="filterDate"
+        transition="scale-transition"
+        offset-y
+        min-width="290px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="filterDate"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="filterDate" range no-title scrollable>
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="menu3 = false">Cancel</v-btn>
+          <v-btn text color="primary" @click="$refs.menu3.save(filterDate)">OK</v-btn>
+        </v-date-picker>
+      </v-menu>
+      <v-btn dark class="custom-button" @click="reset">Reset</v-btn>
         </v-flex>
         <!-- LIST TODO -->
         <div class="todo-list">
@@ -191,6 +208,7 @@
 </template>
 
 <script>
+import * as moment from 'moment';
 export default {
   name: "HelloWorld",
   data() {
@@ -205,33 +223,38 @@ export default {
       selectedItem: {},
       menu: false,
       menu2: false,
+      menu3: false,
       edit: false,
       toEditIndex: null,
+      filterPriority: "All",
+      filterPriorities: ["All", "High", "Medium", "Low"],
       priorities: ["High", "Medium", "Low"],
       selectedPriority: "Low",
       all: true,
       high: false,
       medium: false,
-      low: false
+      low: false,
+      filterDate: ['2000-01-01', '2050-01-01']
     };
   },
   computed: {
     items() {
       return this.toDos.filter(todo => {
-        if (this.all === true) {
+        if (this.filterPriority.toLowerCase() === "all") {
           return true;
-        } else if (this.high === true && todo.Priority === "High") {
-          return true;
-        } else if (this.low === true && todo.Priority === "Low") {
-          return true;
+        } else {
+          return (
+            todo.Priority.toLowerCase() === this.filterPriority.toLowerCase()
+          );
         }
-        if (this.medium === true && todo.Priority === "Medium") {
-          return true;
-        }
-      });
+      }).filter(todoItem => moment(todoItem.Date).isBetween(this.filterDate[0], this.filterDate[1]));
     }
   },
   methods: {
+    reset() {
+      this.filterDate = ['2000-01-01', '2050-01-01'];
+      this.filterPriority = 'All';
+    },
     getEventColor(event) {
       return event.color;
     },
@@ -311,7 +334,7 @@ export default {
   },
   mounted() {
     if (localStorage.getItem("toDos"))
-    this.toDos = JSON.parse(localStorage.getItem("toDos"));
+      this.toDos = JSON.parse(localStorage.getItem("toDos"));
   },
   watch: {
     toDos: {
