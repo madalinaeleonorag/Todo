@@ -34,8 +34,6 @@
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="selectedDate"
-              label="Select due date"
-              readonly
               v-bind="attrs"
               class="date-picker-custom"
               v-on="on"
@@ -72,30 +70,25 @@
             label="Select priority"
             class="select-priority"
           ></v-select>
-      <v-menu
-        ref="menu3"
-        v-model="menu3"
-        :close-on-content-click="false"
-        :return-value.sync="filterDate"
-        transition="scale-transition"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            v-model="filterDate"
-            readonly
-            v-bind="attrs"
-            v-on="on"
-          ></v-text-field>
-        </template>
-        <v-date-picker v-model="filterDate" range no-title scrollable>
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="menu3 = false">Cancel</v-btn>
-          <v-btn text color="primary" @click="$refs.menu3.save(filterDate)">OK</v-btn>
-        </v-date-picker>
-      </v-menu>
-      <v-btn dark class="custom-button" @click="reset">Reset</v-btn>
+          <v-menu
+            ref="menu3"
+            v-model="menu3"
+            :close-on-content-click="false"
+            :return-value.sync="filterDate"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field v-model="filterDate" readonly v-bind="attrs" v-on="on" class="date-picker-custom"></v-text-field>
+            </template>
+            <v-date-picker v-model="filterDate" range no-title scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu3 = false">Cancel</v-btn>
+              <v-btn text color="primary" @click="$refs.menu3.save(filterDate)">OK</v-btn>
+            </v-date-picker>
+          </v-menu>
+          <v-btn dark class="custom-button" @click="reset">Reset</v-btn>
         </v-flex>
         <!-- LIST TODO -->
         <div class="todo-list">
@@ -183,10 +176,8 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="selectedItem.Date"
-                label="Select due date"
-                readonly
                 v-bind="attrs"
-                class="date-picker-custom full-width"
+                class="date-picker-custom"
                 v-on="on"
               ></v-text-field>
             </template>
@@ -208,7 +199,7 @@
 </template>
 
 <script>
-import * as moment from 'moment';
+import * as moment from "moment";
 export default {
   name: "HelloWorld",
   data() {
@@ -234,26 +225,33 @@ export default {
       high: false,
       medium: false,
       low: false,
-      filterDate: ['2000-01-01', '2050-01-01']
+      filterDate: ["2000-01-01", "2050-01-01"]
     };
   },
   computed: {
     items() {
-      return this.toDos.filter(todo => {
-        if (this.filterPriority.toLowerCase() === "all") {
-          return true;
-        } else {
-          return (
-            todo.Priority.toLowerCase() === this.filterPriority.toLowerCase()
-          );
-        }
-      }).filter(todoItem => moment(todoItem.Date).isBetween(this.filterDate[0], this.filterDate[1]));
+      return this.toDos
+        .filter(todo => {
+          if (this.filterPriority.toLowerCase() === "all") {
+            return true;
+          } else {
+            return (
+              todo.Priority.toLowerCase() === this.filterPriority.toLowerCase()
+            );
+          }
+        })
+        .filter(todoItem =>
+          moment(todoItem.Date).isBetween(
+            this.filterDate[0],
+            this.filterDate[1]
+          )
+        );
     }
   },
   methods: {
     reset() {
-      this.filterDate = ['2000-01-01', '2050-01-01'];
-      this.filterPriority = 'All';
+      this.filterDate = ["2000-01-01", "2050-01-01"];
+      this.filterPriority = "All";
     },
     getEventColor(event) {
       return event.color;
@@ -348,7 +346,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .v-divider {
   border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
@@ -421,6 +419,18 @@ export default {
 }
 .v-input__slot {
   width: auto;
+}
+.v-text-field > .v-input__control > .v-input__slot > .v-text-field__slot {
+  background-color: white !important;
+  border-radius: 3px;
+      padding-bottom: 8px;
+    padding-top: 8px;
+  padding-left: 10px !important;
+}
+.date-picker-custom {
+  margin-top: unset !important;
+  padding-top: unset !important;
+  margin-left: 10px;
 }
 .layout {
   width: 100%;
