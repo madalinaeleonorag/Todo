@@ -237,6 +237,7 @@
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
           <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
           <v-btn icon class="ma-2" @click="$refs.calendar.next()">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
@@ -377,18 +378,19 @@ export default {
 
       const min = new Date(`${start.date}T00:00:00`);
       const max = new Date(`${end.date}T23:59:59`);
-
-      for (let i = 0; i < this.toDos; i++) {
+console.log(this.toDos)
+      this.toDos.forEach(item => {
         const firstTimestamp = this.rnd(min.getTime(), max.getTime());
+        console.log(firstTimestamp)
         const first = new Date(firstTimestamp - (firstTimestamp % 900000));
         console.log(first);
         events.push({
-          name: this.toDos[i].Text,
-          start: this.toDos[i].Date,
-          color: this.getColorForStatus(this.toDos[i].Priority),
+          name: item.Text,
+          start: item.Date,
+          color: this.getColorForStatus(item.Priority),
           timed: false
         });
-      }
+      });
       this.events = events;
     },
     rnd(a, b) {
