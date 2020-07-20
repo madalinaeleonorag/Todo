@@ -80,7 +80,13 @@
             min-width="290px"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="filterDate" readonly v-bind="attrs" v-on="on" class="date-picker-custom"></v-text-field>
+              <v-text-field
+                v-model="filterDate"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                class="date-picker-custom"
+              ></v-text-field>
             </template>
             <v-date-picker v-model="filterDate" range no-title scrollable>
               <v-spacer></v-spacer>
@@ -92,36 +98,137 @@
         </v-flex>
         <!-- LIST TODO -->
         <div class="todo-list">
-          <div v-for="(item, index) in items" :key="index" style="margin-bottom: 20px;">
-            <div class="todo-details">
-              <v-icon
-                class="todo-priority-icon"
-                :color="getColorForStatus(item.Priority)"
-              >mdi-checkbox-blank-circle</v-icon>
+          <v-expansion-panels>
+            <v-expansion-panel v-if="filteredItems('overdue').length > 0">
+              <v-expansion-panel-header>Overdue</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <div
+                  v-for="(item, index) in filteredItems('overdue')"
+                  :key="index"
+                  style="margin-bottom: 20px;"
+                >
+                  <div class="todo-details">
+                    <v-icon
+                      class="todo-priority-icon"
+                      :color="getColorForStatus(item.Priority)"
+                    >mdi-checkbox-blank-circle</v-icon>
 
-              <div>{{ item.Text }}</div>
+                    <div>{{ item.Text }}</div>
 
-              <div class="todo-due-date">- {{item.Date}}</div>
+                    <div class="todo-due-date">- {{item.Date}}</div>
 
-              <v-spacer></v-spacer>
-              <div class="todo-actions">
-                <v-icon
-                  class="todo-status-icon"
-                  @click="doneToDo(index)"
-                  color="green"
-                  v-if="item.Status !== 'Done'"
-                >mdi-check</v-icon>
-                <v-icon
-                  class="todo-status-icon"
-                  @click="editToDo(index)"
-                  color="orange"
-                  v-if="item.Status !== 'Done'"
-                >mdi-pencil</v-icon>
-                <v-icon class="todo-status-icon" @click="deleteToDo(index)" color="red">mdi-delete</v-icon>
-              </div>
-            </div>
-            <v-divider></v-divider>
-          </div>
+                    <v-spacer></v-spacer>
+                    <div class="todo-actions">
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="doneToDo(index)"
+                        color="green"
+                        v-if="item.Status !== 'Done'"
+                      >mdi-check</v-icon>
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="editToDo(index)"
+                        color="orange"
+                        v-if="item.Status !== 'Done'"
+                      >mdi-pencil</v-icon>
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="deleteToDo(index)"
+                        color="red"
+                      >mdi-delete</v-icon>
+                    </div>
+                  </div>
+                  <v-divider></v-divider>
+                </div>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel  v-if="filteredItems('todo').length > 0">
+              <v-expansion-panel-header>To do</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <div
+                  v-for="(item, index) in filteredItems('todo')"
+                  :key="index"
+                  style="margin-bottom: 20px;"
+                >
+                  <div class="todo-details">
+                    <v-icon
+                      class="todo-priority-icon"
+                      :color="getColorForStatus(item.Priority)"
+                    >mdi-checkbox-blank-circle</v-icon>
+
+                    <div>{{ item.Text }}</div>
+
+                    <div class="todo-due-date">- {{item.Date}}</div>
+
+                    <v-spacer></v-spacer>
+                    <div class="todo-actions">
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="doneToDo(index)"
+                        color="green"
+                        v-if="item.Status !== 'Done'"
+                      >mdi-check</v-icon>
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="editToDo(index)"
+                        color="orange"
+                        v-if="item.Status !== 'Done'"
+                      >mdi-pencil</v-icon>
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="deleteToDo(index)"
+                        color="red"
+                      >mdi-delete</v-icon>
+                    </div>
+                  </div>
+                  <v-divider></v-divider>
+                </div>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel  v-if="filteredItems('done').length > 0">
+              <v-expansion-panel-header>Done items</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <div
+                  v-for="(item, index) in filteredItems('done')"
+                  :key="index"
+                  style="margin-bottom: 20px;"
+                >
+                  <div class="todo-details">
+                    <v-icon
+                      class="todo-priority-icon"
+                      :color="getColorForStatus(item.Priority)"
+                    >mdi-checkbox-blank-circle</v-icon>
+
+                    <div>{{ item.Text }}</div>
+
+                    <div class="todo-due-date">- {{item.Date}}</div>
+
+                    <v-spacer></v-spacer>
+                    <div class="todo-actions">
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="doneToDo(index)"
+                        color="green"
+                        v-if="item.Status !== 'Done'"
+                      >mdi-check</v-icon>
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="editToDo(index)"
+                        color="orange"
+                        v-if="item.Status !== 'Done'"
+                      >mdi-pencil</v-icon>
+                      <v-icon
+                        class="todo-status-icon"
+                        @click="deleteToDo(index)"
+                        color="red"
+                      >mdi-delete</v-icon>
+                    </div>
+                  </div>
+                  <v-divider></v-divider>
+                </div>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </div>
       </div>
       <div class="tab-content" v-if="tab === 'calendar'">
@@ -228,8 +335,8 @@ export default {
       filterDate: ["2000-01-01", "2050-01-01"]
     };
   },
-  computed: {
-    items() {
+  methods: {
+    filteredItems(type) {
       return this.toDos
         .filter(todo => {
           if (this.filterPriority.toLowerCase() === "all") {
@@ -245,10 +352,18 @@ export default {
             this.filterDate[0],
             this.filterDate[1]
           )
-        );
-    }
-  },
-  methods: {
+        )
+        .filter(todoItemResult => {
+          switch (type) {
+            case "overdue":
+             return  moment(todoItemResult.Date).isSameOrBefore(moment()) && todoItemResult.Status.toLowerCase() !== 'done';
+            case "todo":
+              return todoItemResult.Status.toLowerCase() === "incomplete";
+            case "done":
+              return todoItemResult.Status.toLowerCase() === "done";
+          }
+        });
+    },
     reset() {
       this.filterDate = ["2000-01-01", "2050-01-01"];
       this.filterPriority = "All";
@@ -350,6 +465,21 @@ export default {
 .v-divider {
   border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
+.v-expansion-panel-header {
+  color: rgb(195 120 4) !important;
+  font-weight: bold;
+  font-size: x-large;
+}
+.v-expansion-panel::before {
+  box-shadow: 0px 3px 1px -2px rgb(195 120 4) , 0px 2px 2px 0px rgb(195 120 4) , 0px 1px 5px 0px rgb(195 120 4) !important;
+}
+.v-expansion-panel-header__icon .v-icon {
+  color: rgb(195 120 4) !important;
+}
+.v-expansion-panels .v-expansion-panel {
+  background-color: rgba(195, 120, 4, 0.13) !important;
+  color: white !important;
+}
 .dialog-content {
   display: flex;
   width: 100%;
@@ -423,8 +553,8 @@ export default {
 .v-text-field > .v-input__control > .v-input__slot > .v-text-field__slot {
   background-color: white !important;
   border-radius: 3px;
-      padding-bottom: 8px;
-    padding-top: 8px;
+  padding-bottom: 8px;
+  padding-top: 8px;
   padding-left: 10px !important;
 }
 .date-picker-custom {
