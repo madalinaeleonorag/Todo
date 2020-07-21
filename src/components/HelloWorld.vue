@@ -382,17 +382,9 @@ export default {
     getEventColor(event) {
       return event.color;
     },
-    getEvents({ start, end }) {
+    getEvents() {
       const events = [];
-      console.log("test");
-      const min = new Date(`${start.date}T00:00:00`);
-      const max = new Date(`${end.date}T23:59:59`);
-      console.log(this.toDos);
       this.toDos.forEach(item => {
-        const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        console.log(firstTimestamp);
-        const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-        console.log(first);
         events.push({
           name: item.Text,
           start: item.Date,
@@ -401,9 +393,6 @@ export default {
         });
       });
       this.events = events;
-    },
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a;
     },
     getColorForStatus(priority) {
       return priority === "High"
@@ -420,6 +409,7 @@ export default {
         Date: this.selectedDate
       });
       this.newToDo = "";
+      this.getEvents();
     },
     doneToDo(value) {
       this.toDos[value].Status = "Done";
@@ -599,11 +589,13 @@ export default {
 .add-item {
   width: 100%;
   display: flex;
-  margin: 0px 100px;
   flex-flow: row;
 }
 .select-priority {
   max-width: 15%;
+}
+.row {
+  margin-left: unset;
 }
 .custom-button {
   float: right;
