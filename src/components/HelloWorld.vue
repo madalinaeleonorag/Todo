@@ -142,7 +142,7 @@
                 </div>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel  v-if="filteredItems('todo').length > 0">
+            <v-expansion-panel v-if="filteredItems('todo').length > 0">
               <v-expansion-panel-header>To do</v-expansion-panel-header>
               <v-expansion-panel-content>
                 <div
@@ -185,7 +185,7 @@
                 </div>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel  v-if="filteredItems('done').length > 0">
+            <v-expansion-panel v-if="filteredItems('done').length > 0">
               <v-expansion-panel-header>Done items</v-expansion-panel-header>
               <v-expansion-panel-content>
                 <div
@@ -232,20 +232,25 @@
         </div>
       </div>
       <div class="tab-content" v-if="tab === 'calendar'">
-        <v-sheet tile height="54" color="grey lighten-3" class="d-flex">
-          <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-spacer></v-spacer>
-          <v-btn icon class="ma-2" @click="$refs.calendar.next()">
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
+        <v-sheet height="64">
+          <v-toolbar flat color="white">
+            <v-btn fab text small color="grey darken-2" @click="$refs.calendar.prev()">
+              <v-icon small>mdi-chevron-left</v-icon>
+            </v-btn>
+            <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">Today</v-btn>
+
+            <v-toolbar-title v-if="$refs.calendar">{{ $refs.calendar.title }}</v-toolbar-title>
+            <v-btn fab text small color="grey darken-2" @click="$refs.calendar.next()">
+              <v-icon small>mdi-chevron-right</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+          </v-toolbar>
         </v-sheet>
+
         <v-sheet height="600">
           <v-calendar
             ref="calendar"
-            v-model="value"
+            v-model="focus"
             :weekdays="weekday"
             type="month"
             :events="events"
@@ -308,6 +313,7 @@
 
 <script>
 import * as moment from "moment";
+import Swal from "sweetalert2";
 export default {
   name: "HelloWorld",
   data() {
@@ -333,7 +339,8 @@ export default {
       high: false,
       medium: false,
       low: false,
-      filterDate: ["2000-01-01", "2050-01-01"]
+      filterDate: ["2000-01-01", "2050-01-01"],
+      focus: "",
     };
   },
   methods: {
@@ -357,7 +364,10 @@ export default {
         .filter(todoItemResult => {
           switch (type) {
             case "overdue":
-             return  moment(todoItemResult.Date).isSameOrBefore(moment()) && todoItemResult.Status.toLowerCase() !== 'done';
+              return (
+                moment(todoItemResult.Date).isSameOrBefore(moment()) &&
+                todoItemResult.Status.toLowerCase() !== "done"
+              );
             case "todo":
               return todoItemResult.Status.toLowerCase() === "incomplete";
             case "done":
@@ -375,13 +385,12 @@ export default {
     getEvents({ start, end }) {
       const events = [];
       console.log("test");
-
       const min = new Date(`${start.date}T00:00:00`);
       const max = new Date(`${end.date}T23:59:59`);
-console.log(this.toDos)
+      console.log(this.toDos);
       this.toDos.forEach(item => {
         const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        console.log(firstTimestamp)
+        console.log(firstTimestamp);
         const first = new Date(firstTimestamp - (firstTimestamp % 900000));
         console.log(first);
         events.push({
@@ -429,10 +438,26 @@ console.log(this.toDos)
       this.toDos[this.toEditIndex] = this.selectedItem;
       localStorage.setItem("toDos", JSON.stringify(this.toDos));
       this.edit = false;
+
     },
     deleteToDo(value) {
-      this.toDos.splice(value, 1);
-      localStorage.setItem("toDos", JSON.stringify(this.toDos));
+      Swal.fire({
+        text: "Are you sure you want to delete this ToDo?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "rgb(195 120 4)",
+        confirmButtonText: "Yes"
+      }).then(result => {
+        if (result.value) {
+          this.toDos.splice(value, 1);
+          localStorage.setItem("toDos", JSON.stringify(this.toDos));
+          Swal.fire({
+            text: "Your ToDo was deleted successfully!",
+            icon: "success",
+            confirmButtonColor: "rgb(195 120 4)"
+          });
+        }
+      });
     },
     checkAll() {
       if (this.all === true) {
@@ -445,6 +470,9 @@ console.log(this.toDos)
       if (this.high === true || this.medium === true || this.low === true) {
         this.all = false;
       }
+    },
+    setToday() {
+      this.focus = "";
     }
   },
   mounted() {
@@ -473,7 +501,8 @@ console.log(this.toDos)
   font-size: x-large;
 }
 .v-expansion-panel::before {
-  box-shadow: 0px 3px 1px -2px rgb(195 120 4) , 0px 2px 2px 0px rgb(195 120 4) , 0px 1px 5px 0px rgb(195 120 4) !important;
+  box-shadow: 0px 3px 1px -2px rgb(195 120 4), 0px 2px 2px 0px rgb(195 120 4),
+    0px 1px 5px 0px rgb(195 120 4) !important;
 }
 .v-expansion-panel-header__icon .v-icon {
   color: rgb(195 120 4) !important;
@@ -586,5 +615,8 @@ console.log(this.toDos)
   margin-left: 10px;
   color: white !important;
   background-color: rgb(195 120 4) !important;
+}
+.swal2-popup .swal2-styled:focus {
+  box-shadow: none !important;
 }
 </style>
