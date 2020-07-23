@@ -435,7 +435,7 @@ export default {
         text: "Are you sure you want to delete this ToDo?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "rgb(195 120 4)",
+        confirmButtonColor: "rgb(237 124 72)",
         confirmButtonText: "Yes"
       }).then(result => {
         if (result.value) {
@@ -444,7 +444,7 @@ export default {
           Swal.fire({
             text: "Your ToDo was deleted successfully!",
             icon: "success",
-            confirmButtonColor: "rgb(195 120 4)"
+            confirmButtonColor: "rgb(237 124 72)"
           });
         }
       });
@@ -486,19 +486,19 @@ export default {
   border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 .v-expansion-panel-header {
-  color: rgb(195 120 4) !important;
+  color: rgb(237 124 72) !important;
   font-weight: bold;
   font-size: x-large;
 }
 .v-expansion-panel::before {
-  box-shadow: 0px 3px 1px -2px rgb(195 120 4), 0px 2px 2px 0px rgb(195 120 4),
-    0px 1px 5px 0px rgb(195 120 4) !important;
+  box-shadow: 0px 3px 1px -2px rgb(237 124 72), 0px 2px 2px 0px rgb(237 124 72),
+    0px 1px 5px 0px rgb(237 124 72) !important;
 }
 .v-expansion-panel-header__icon .v-icon {
-  color: rgb(195 120 4) !important;
+  color: rgb(237 124 72) !important;
 }
 .v-expansion-panels .v-expansion-panel {
-  background-color: rgba(195, 120, 4, 0.13) !important;
+  background-color: #ffffff40 !important;
   color: white !important;
 }
 .dialog-content {
@@ -595,7 +595,7 @@ export default {
   max-width: 15%;
 }
 .row {
-  margin-left: unset;
+  margin-left: unset !important;
 }
 .custom-button {
   float: right;
@@ -606,7 +606,7 @@ export default {
   text-transform: capitalize;
   margin-left: 10px;
   color: white !important;
-  background-color: rgb(195 120 4) !important;
+  background-color: rgb(237 124 72) !important;
 }
 .swal2-popup .swal2-styled:focus {
   box-shadow: none !important;

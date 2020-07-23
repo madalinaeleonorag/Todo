@@ -30,7 +30,6 @@ export default {
 .bg-image {
   height: 100%;
   overflow: hidden;
-  background-size: cover;
-  /* filter: blur(1px); */
+  background-size: cover !important;
 }
 </style>
